@@ -671,7 +671,7 @@ struct pb_extension_s {
 #define PB_ANONYMOUS_ONEOF_STATIC(u, tag, st, m, fd, ltype, maxsizl, ptr) \
     {tag, PB_ATYPE_STATIC | PB_HTYPE_ONEOF | ltype, \
     fd, pb_delta(st, which_ ## u, m), \
-    pb_membersize(st, m), 0, ptr}
+    pb_membersize(st, m), 0, ptr, maxsizl}
 #endif
 
 #ifndef PB_ENABLE_ADV_SIZE_CHECK
