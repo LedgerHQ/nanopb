@@ -351,7 +351,7 @@ static bool checkreturn encode_basic_field(pb_ostream_t *stream,
     bool implicit_has;
     const void *pSize = &implicit_has;
     
-    func = PB_ENCODERS[PB_LTYPE(field->type)];
+    func = (pb_encoder_t)PIC(PB_ENCODERS[PB_LTYPE(field->type)]);
     
     if (field->size_offset)
     {
@@ -386,7 +386,7 @@ static bool checkreturn encode_basic_field(pb_ostream_t *stream,
                 PB_RETURN_ERROR(stream, "missing required field");
             if (!pb_encode_tag_for_field(stream, field))
                 return false;
-            if (!((pb_encoder_t)PIC(func))(stream, field, pData))
+            if (!func(stream, field, pData))
                 return false;
             break;
         
@@ -396,7 +396,7 @@ static bool checkreturn encode_basic_field(pb_ostream_t *stream,
                 if (!pb_encode_tag_for_field(stream, field))
                     return false;
             
-                if (!((pb_encoder_t)PIC(func))(stream, field, pData))
+                if (!func(stream, field, pData))
                     return false;
             }
             break;
@@ -419,7 +419,7 @@ static bool checkreturn encode_basic_field(pb_ostream_t *stream,
                 if (!pb_encode_tag_for_field(stream, field))
                     return false;
 
-                if (!((pb_encoder_t)PIC(func))(stream, field, pData))
+                if (!func(stream, field, pData))
                     return false;
             }
             break;
