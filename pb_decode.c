@@ -162,9 +162,11 @@ const char* addr_to_fname(void* func){
     return "";
 }
 
+#if defined(HAVE_PRINTF) && DBGLOG_LEVEL >= 1
 void __cyg_profile_func_enter(void *this_fn, void *call_site) __attribute__((no_instrument_function));
 void __cyg_profile_func_enter( void *func, void *callsite )
 {
+    (void)callsite;
     const char* fname = addr_to_fname(func);
     DBGLOG_INFO("->%.*s %p '%s' [from %p], STACK %p, left: %d\n", G_depth++, " ", func, fname, callsite, &fname, ((void*)&fname) - &_ebss);
     last_stack_left = ((void*)&fname) - &_ebss;
@@ -172,13 +174,12 @@ void __cyg_profile_func_enter( void *func, void *callsite )
 void __cyg_profile_func_exit(void *this_fn, void *call_site) __attribute__((no_instrument_function));
 void __cyg_profile_func_exit( void *func, void *callsite )
 {
-#if defined(HAVE_PRINTF) && DBGLOG_LEVEL >= 1
     const char* fname = addr_to_fname(func);
-#endif
     // last_stack_left = ((void*)&fname) - &_ebss;
     DBGLOG_INFO("<-%.*s %p '%s' [from %p], left: %d\n", --G_depth, " ", func, fname, callsite, ((void*)&fname) - &_ebss);
     // last_stack_left = ((void*)&fname) - &_ebss;
 }
+#endif
 
 /*******************************
  * pb_istream_t implementation *
